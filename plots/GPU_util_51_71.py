@@ -32,13 +32,30 @@ pythia70m_sst2 = {
     ]
 }
 
+# =========================
+# Mode0 values from screenshots
+# =========================
+
+pythia31m_qnli_mode0_energy = 3586.59
+pythia70m_qnli_mode0_energy = 6410.08
+pythia70m_sst2_mode0_energy = 1721.81
+
 df_31_qnli = pd.DataFrame(pythia31m_qnli)
 df_70_qnli = pd.DataFrame(pythia70m_qnli)
 df_70_sst2 = pd.DataFrame(pythia70m_sst2)
 
 # =========================
+# Colors
+# =========================
+
+color_31_qnli = "#3498db"
+color_70_qnli = "#e67e22"
+color_70_sst2 = "#2ecc71"
+
+# =========================
 # Find optimal points
 # =========================
+
 opt_31_qnli_idx = df_31_qnli["energy_j"].idxmin()
 opt_31_qnli_x = df_31_qnli.loc[opt_31_qnli_idx, "config_freq_mhz"]
 opt_31_qnli_y = df_31_qnli.loc[opt_31_qnli_idx, "energy_j"]
@@ -54,6 +71,7 @@ opt_70_sst2_y = df_70_sst2.loc[opt_70_sst2_idx, "energy_j"]
 # =========================
 # Plot
 # =========================
+
 plt.rcParams["font.family"] = "DejaVu Sans"
 
 fig, ax = plt.subplots(figsize=(7.4, 5.2), dpi=120)
@@ -62,7 +80,7 @@ fig, ax = plt.subplots(figsize=(7.4, 5.2), dpi=120)
 ax.plot(
     df_31_qnli["config_freq_mhz"],
     df_31_qnli["energy_j"],
-    color="#3498db",
+    color=color_31_qnli,
     marker="o",
     markersize=5,
     linewidth=2.2,
@@ -73,7 +91,7 @@ ax.plot(
 ax.plot(
     df_70_qnli["config_freq_mhz"],
     df_70_qnli["energy_j"],
-    color="#e67e22",
+    color=color_70_qnli,
     marker="o",
     markersize=5,
     linewidth=2.2,
@@ -84,7 +102,7 @@ ax.plot(
 ax.plot(
     df_70_sst2["config_freq_mhz"],
     df_70_sst2["energy_j"],
-    color="#2ecc71",
+    color=color_70_sst2,
     marker="o",
     markersize=5,
     linewidth=2.2,
@@ -92,12 +110,42 @@ ax.plot(
 )
 
 # =========================
+# Mode0 dashed lines
+# Same colors as corresponding model lines
+# =========================
+
+ax.axhline(
+    y=pythia31m_qnli_mode0_energy,
+    color=color_31_qnli,
+    linestyle="--",
+    linewidth=1.5,
+    label="Pythia-31M QNLI Mode0"
+)
+
+ax.axhline(
+    y=pythia70m_qnli_mode0_energy,
+    color=color_70_qnli,
+    linestyle="--",
+    linewidth=1.5,
+    label="Pythia-70M QNLI Mode0"
+)
+
+ax.axhline(
+    y=pythia70m_sst2_mode0_energy,
+    color=color_70_sst2,
+    linestyle="--",
+    linewidth=1.5,
+    label="Pythia-70M SST-2 Mode0"
+)
+
+# =========================
 # Optimal points
 # =========================
+
 ax.scatter(
     opt_31_qnli_x,
     opt_31_qnli_y,
-    color="#3498db",
+    color=color_31_qnli,
     marker="*",
     s=260,
     edgecolor="black",
@@ -109,7 +157,7 @@ ax.scatter(
 ax.scatter(
     opt_70_qnli_x,
     opt_70_qnli_y,
-    color="#e67e22",
+    color=color_70_qnli,
     marker="*",
     s=260,
     edgecolor="black",
@@ -121,7 +169,7 @@ ax.scatter(
 ax.scatter(
     opt_70_sst2_x,
     opt_70_sst2_y,
-    color="#2ecc71",
+    color=color_70_sst2,
     marker="*",
     s=260,
     edgecolor="black",
@@ -133,11 +181,12 @@ ax.scatter(
 # =========================
 # Optimal labels
 # =========================
+
 ax.text(
     opt_31_qnli_x,
     opt_31_qnli_y - 180,
     f"{opt_31_qnli_x} MHz",
-    color="#3498db",
+    color=color_31_qnli,
     fontsize=9,
     fontweight="bold",
     ha="center",
@@ -148,7 +197,7 @@ ax.text(
     opt_70_qnli_x,
     opt_70_qnli_y - 220,
     f"{opt_70_qnli_x} MHz",
-    color="#e67e22",
+    color=color_70_qnli,
     fontsize=9,
     fontweight="bold",
     ha="center",
@@ -159,7 +208,7 @@ ax.text(
     opt_70_sst2_x,
     opt_70_sst2_y + 180,
     f"{opt_70_sst2_x} MHz",
-    color="#27ae60",
+    color=color_70_sst2,
     fontsize=9,
     fontweight="bold",
     ha="center",
@@ -169,6 +218,7 @@ ax.text(
 # =========================
 # Titles and labels
 # =========================
+
 ax.set_title(
     "Pythia Models\nEnergy vs GPU Frequency",
     fontsize=14,
@@ -190,6 +240,7 @@ ax.set_ylabel(
 # =========================
 # Grid and axes styling
 # =========================
+
 ax.grid(
     True,
     linestyle="-",
@@ -211,6 +262,7 @@ ax.tick_params(axis="both", labelsize=9, colors="#333333")
 # =========================
 # Axis limits
 # =========================
+
 ax.set_xticks(freqs)
 ax.set_xlim(min(freqs) - 60, max(freqs) + 50)
 
@@ -218,6 +270,11 @@ all_energy_values = (
     df_31_qnli["energy_j"].tolist()
     + df_70_qnli["energy_j"].tolist()
     + df_70_sst2["energy_j"].tolist()
+    + [
+        pythia31m_qnli_mode0_energy,
+        pythia70m_qnli_mode0_energy,
+        pythia70m_sst2_mode0_energy
+    ]
 )
 
 y_min_raw = min(all_energy_values)
@@ -234,12 +291,13 @@ ax.ticklabel_format(style="plain", axis="y")
 # =========================
 # Legend under graph
 # =========================
+
 ax.legend(
     loc="upper center",
     bbox_to_anchor=(0.5, -0.22),
-    ncol=2,
+    ncol=3,
     frameon=True,
-    fontsize=8.5
+    fontsize=8.0
 )
 
 plt.tight_layout()

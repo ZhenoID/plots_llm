@@ -110,7 +110,7 @@ ax.text(
 # Mode0 dashed lines
 ax.axhline(
     y=qnli_mode0_energy,
-    color="#8e44ad",
+    color="#3498db",
     linestyle="--",
     linewidth=1.5,
     label="QNLI MAXN (Mode0)"
@@ -118,7 +118,7 @@ ax.axhline(
 
 ax.axhline(
     y=sst2_mode0_energy,
-    color="#7f8c8d",
+    color="#e67e22",
     linestyle="--",
     linewidth=1.5,
     label="SST-2 MAXN (Mode0)"
